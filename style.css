@@ -99,15 +99,16 @@ a {
   letter-spacing: 0.2em;
   color: var(--muted);
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .hero-headline {
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 700;
-  line-height: 1.15;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.4;
   margin-bottom: 1rem;
-  max-width: 800px;
+  max-width: 640px;
+  color: var(--muted);
 }
 
 #cycle-text {
@@ -127,16 +128,16 @@ a {
 }
 
 .hero-tagline {
-  font-size: 1.1rem;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
   color: var(--accent);
-  letter-spacing: 0.05em;
-  margin-bottom: 2.5rem;
-  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+  font-weight: 700;
 }
 
 .brand-story {
   max-width: 560px;
-  margin: 0 auto;
+  margin: 2.5rem auto 0;
   color: var(--muted);
   font-size: 0.95rem;
   line-height: 1.7;
