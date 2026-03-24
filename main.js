@@ -49,5 +49,63 @@
         }
       });
     }
+
+    // Platform Detection for Download Buttons
+    (function() {
+      function detectPlatform() {
+        const userAgent = navigator.userAgent;
+        const platform = navigator.platform;
+
+        // Windows detection
+        if (platform.indexOf('Win') !== -1 || userAgent.indexOf('Windows') !== -1) {
+          // Check for ARM64
+          if (userAgent.indexOf('ARM') !== -1 || userAgent.indexOf('aarch64') !== -1) {
+            return 'windows-arm';
+          }
+          return 'windows';
+        }
+
+        // macOS detection
+        if (platform.indexOf('Mac') !== -1 || userAgent.indexOf('Mac OS X') !== -1) {
+          return 'macos';
+        }
+
+        // Linux detection
+        if (platform.indexOf('Linux') !== -1 || userAgent.indexOf('Linux') !== -1) {
+          return 'linux';
+        }
+
+        // Fallback: no detection
+        return null;
+      }
+
+      function highlightPlatformButton() {
+        const detected = detectPlatform();
+        if (!detected) return; // No detection, show all buttons equally
+
+        const buttons = document.querySelectorAll('.btn-platform[data-recommended]');
+
+        buttons.forEach(function(button) {
+          const buttonPlatform = button.getAttribute('data-platform');
+
+          if (buttonPlatform === detected) {
+            button.setAttribute('data-highlighted', '');
+
+            // Move highlighted button to first position
+            const container = button.parentNode;
+            container.insertBefore(button, container.firstChild);
+          }
+        });
+
+        // Ensure secondary button stays last
+        const secondaryButton = document.querySelector('.btn-platform--secondary');
+        if (secondaryButton) {
+          const container = secondaryButton.parentNode;
+          container.appendChild(secondaryButton);
+        }
+      }
+
+      highlightPlatformButton();
+    })();
   });
 })();
