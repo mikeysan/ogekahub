@@ -59,8 +59,8 @@
         repoName: 'ogeka',
         cacheKey: 'ogeka_release_cache',
         cacheDuration: 3600000, // 1 hour in milliseconds
-        apiEndpoint: 'https://api.github.com/repos/mikeysan/ogeka/releases/latest',
-        fallbackUrl: 'https://github.com/mikeysan/ogeka/releases/latest'
+        apiEndpoint: 'https://api.github.com/repos/mikeysan/ogekahub/releases/latest',
+        fallbackUrl: 'https://github.com/mikeysan/ogekahub/releases/latest'
       };
 
       const ASSET_PATTERNS = {
