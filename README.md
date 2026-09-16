@@ -12,14 +12,16 @@ Download the latest release for your platform:
 
 | Platform | Architecture | File |
 |----------|--------------|------|
-| Windows | x64 (Intel/AMD) | `ogeka-windows-x64-*.exe` |
-| Windows | ARM64 (Snapdragon/SQ) | `ogeka-windows-arm64-*.exe` |
-| macOS | x64 (Intel) | `Ogeka_0.1.0_x64.dmg` |
-| Linux | x64 (AMD64) | `ogeka_0.1.0_amd64.AppImage` |
+| Windows | x64 (Intel/AMD) | `Ogeka_*_x64-setup.exe` |
+| Windows | ARM64 (Snapdragon/SQ) | `Ogeka_*_arm64-setup.exe` |
+| macOS | Apple Silicon (M-series) | `Ogeka_*_aarch64.dmg` |
+| Linux | x64 (AMD64) | `Ogeka_*_amd64.AppImage` |
 
 **Windows Architecture Guide:**
 - Choose **x64** for Intel and AMD processors (most Windows PCs)
 - Choose **ARM64** for Qualcomm Snapdragon or Microsoft SQ processors (Surface Pro X, ARM-based laptops)
+
+**macOS:** builds are Apple Silicon only. There is no Intel build.
 
 After installation, launch Ogeka and use `Cmd+Shift+Space` (macOS) or `Ctrl+Shift+Space` (Windows/Linux) to show or focus the window.
 
@@ -91,7 +93,6 @@ Database backup /every 1d
 | `d` | Days | Business hours only, skips weekends |
 | `cd` | Calendar Days | Includes weekends |
 | `w` | Weeks | 7 calendar days |
-| `mo` | Months | 30 calendar days |
 
 **Default:** If no `/every` is specified, cycles default to 4 hours.
 
@@ -121,12 +122,23 @@ Use `/due` to set specific deadlines on active items:
 
 | Format | Example | Result |
 |--------|---------|--------|
-| Relative time | `/due 30m` | Due in 30 minutes |
+| Minutes | `/due 30m` | Due in 30 minutes |
 | Hours | `/due 2h` | Due in 2 hours |
-| Specific time | `/due 3pm` | Today at 3:00 PM |
+| Days | `/due 3d` | Due in 3 days |
+| Weeks | `/due 2w` | Due in 14 days |
+| Calendar months | `/due 2mo` | The same date two months on |
+| Specific time | `/due 3pm` | Today at 3:00 PM, or tomorrow if it has passed |
 | 24-hour format | `/due 15:30` | Today at 3:30 PM |
-| Tomorrow | `/due tomorrow` | Tomorrow at 9 AM |
-| Day of week | `/due Friday` | Next Friday at 9 AM |
+| Tomorrow | `/due tomorrow` | Tomorrow at your work start hour |
+| Day of week | `/due Friday` | The next Friday at your work start hour |
+
+**Two kinds of deadline.** Durations (`m`, `h`, `d`, `w`) are plain elapsed
+time — they keep the current time of day and run straight through weekends.
+The calendar forms (`2mo`, `3pm`, `tomorrow`, `Friday`) land on a date at your
+work start hour, and roll forward if that date falls on a weekend.
+
+Months are real calendar months, clamped to the end of the month: 31 January
+plus one month is 28 February, not 3 March.
 
 ---
 
@@ -134,16 +146,19 @@ Use `/due` to set specific deadlines on active items:
 
 ### Acknowledge (Reset Timer)
 
-When you complete a cycle, click the **checkmark** to reset it. The next due time is calculated based on the cadence and work hours.
+When you complete a cycle, click the **checkmark** and choose **Reset Timer**. The next due time is calculated from the item's cadence and your work hours.
+
+Items created with `/due` have no cadence to restore, so Reset Timer asks you for a new due time instead. It accepts every format `/due` does.
 
 ### Snooze
 
 Temporarily hide items you can't address right now:
 
-- Click a snooze button (30m, 1h, 4h, 1d)
+- Click the **snooze** button on an item and enter a duration (`30m`, `2h`, `1d`, `1w`, `1mo`)
 - Or type: `Item title /snooze 2h`
 
-Snoozed items move to a separate section and return automatically when the snooze expires.
+Snoozed items are hidden from the list entirely. They return on their own when
+the snooze expires, arriving with five minutes left on the clock.
 
 ### Archive
 
@@ -195,7 +210,9 @@ Ogeka runs in your system tray:
 | `Cmd+Shift+Space` (macOS) | Show/focus window |
 | `Ctrl+Shift+Space` (Windows/Linux) | Show/focus window |
 | `Enter` | Submit command |
-| Type `help` | Open help modal |
+
+Open the help modal with the **?** button in the header, or the **Commands**
+link beside the input bar.
 
 ---
 
