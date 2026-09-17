@@ -109,6 +109,7 @@ Hide items until you need them:
 Q4 Planning /snooze 3w
 Holiday coverage /snooze 2mo
 ```
+`3w` is twenty-one working days; `2mo` is two calendar months.
 
 ### Paste URLs
 
@@ -168,6 +169,11 @@ Temporarily hide items you can't address right now:
 
 - Click the **snooze** button on an item and enter a duration (`30m`, `2h`, `1d`, `1w`, `1mo`)
 - Or type: `Item title /snooze 2h`
+
+A snooze is a deadline like any other and uses the same units as `/due`: `1d`
+is one of your working days, `1w` is seven of them, and `1mo` is a real
+calendar month. Snooze something on a Saturday and the clock does not start
+until Monday morning.
 
 Snoozed items are hidden from the list entirely. They return on their own when
 the snooze expires, arriving with five minutes left on the clock.
