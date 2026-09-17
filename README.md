@@ -12,14 +12,16 @@ Download the latest release for your platform:
 
 | Platform | Architecture | File |
 |----------|--------------|------|
-| Windows | x64 (Intel/AMD) | `ogeka-windows-x64-*.exe` |
-| Windows | ARM64 (Snapdragon/SQ) | `ogeka-windows-arm64-*.exe` |
-| macOS | x64 (Intel) | `Ogeka_0.1.0_x64.dmg` |
-| Linux | x64 (AMD64) | `ogeka_0.1.0_amd64.AppImage` |
+| Windows | x64 (Intel/AMD) | `Ogeka_*_x64-setup.exe` |
+| Windows | ARM64 (Snapdragon/SQ) | `Ogeka_*_arm64-setup.exe` |
+| macOS | Apple Silicon (M-series) | `Ogeka_*_aarch64.dmg` |
+| Linux | x64 (AMD64) | `Ogeka_*_amd64.AppImage` |
 
 **Windows Architecture Guide:**
 - Choose **x64** for Intel and AMD processors (most Windows PCs)
 - Choose **ARM64** for Qualcomm Snapdragon or Microsoft SQ processors (Surface Pro X, ARM-based laptops)
+
+**macOS:** builds are Apple Silicon only. There is no Intel build.
 
 After installation, launch Ogeka and use `Cmd+Shift+Space` (macOS) or `Ctrl+Shift+Space` (Windows/Linux) to show or focus the window.
 
@@ -52,15 +54,19 @@ Ogeka manages **cycles** — recurring tasks that repeat on a schedule. Unlike t
 
 ### Business Hours Logic
 
-When using `d` (days), Ogeka respects your work schedule:
+Everything except `cd` respects your work schedule:
 
-- Time only accumulates during configured work hours
-- Weekends are skipped by default
-- A "1 day" cadence = 8 work hours (not 24 calendar hours)
+- Time only accumulates during your configured work hours
+- Non-working days are skipped, whichever days those are
+- A "1 day" cadence is **one of your working days** — 8 hours on a 9–5
+  schedule, 9 hours on a 9–6 one. Never 24 hours
 
 **Example:** With 9 AM–5 PM work hours and a 1-day cadence:
 - Check at 4 PM Monday → Due 4 PM Tuesday
 - Check at 4 PM Friday → Due 4 PM Monday (weekend skipped)
+
+A 9 AM–6 PM schedule gives the same two answers. The length of your day
+changes how much time that is, not which day you land on.
 
 Configure work hours via the ⚙️ gear icon.
 
@@ -86,12 +92,13 @@ Database backup /every 1d
 
 | Unit | Meaning | Behavior |
 |------|---------|----------|
-| `m` | Minutes | Always counts |
-| `h` | Hours | Always counts |
-| `d` | Days | Business hours only, skips weekends |
-| `cd` | Calendar Days | Includes weekends |
-| `w` | Weeks | 7 calendar days |
-| `mo` | Months | 30 calendar days |
+| `m` | Minutes | Minutes of working time |
+| `h` | Hours | Hours of working time |
+| `d` | Days | One of *your* working days each — see below |
+| `w` | Weeks | Seven working days |
+| `cd` | Calendar Days | Plain calendar days, weekends included |
+
+`cd` is the only unit that ignores your work schedule.
 
 **Default:** If no `/every` is specified, cycles default to 4 hours.
 
@@ -102,6 +109,7 @@ Hide items until you need them:
 Q4 Planning /snooze 3w
 Holiday coverage /snooze 2mo
 ```
+`3w` is twenty-one working days; `2mo` is two calendar months.
 
 ### Paste URLs
 
@@ -121,12 +129,29 @@ Use `/due` to set specific deadlines on active items:
 
 | Format | Example | Result |
 |--------|---------|--------|
-| Relative time | `/due 30m` | Due in 30 minutes |
-| Hours | `/due 2h` | Due in 2 hours |
-| Specific time | `/due 3pm` | Today at 3:00 PM |
+| Minutes | `/due 30m` | Due in 30 minutes of working time |
+| Hours | `/due 2h` | Due in 2 hours of working time |
+| Days | `/due 3d` | Due in 3 working days |
+| Weeks | `/due 2w` | Due in 14 working days |
+| Calendar months | `/due 2mo` | The same date two months on |
+| Specific time | `/due 3pm` | Today at 3:00 PM, or tomorrow if it has passed |
 | 24-hour format | `/due 15:30` | Today at 3:30 PM |
-| Tomorrow | `/due tomorrow` | Tomorrow at 9 AM |
-| Day of week | `/due Friday` | Next Friday at 9 AM |
+| Tomorrow | `/due tomorrow` | Tomorrow at your work start hour |
+| Day of week | `/due Friday` | The next Friday at your work start hour |
+
+**The countdown only runs while you are working.** Outside your hours it is
+frozen. Set something on a Saturday and it does not start counting down until
+Monday morning: `/due 2h` on a Saturday is due at 11 AM Monday on a 9 AM
+start, not two hours later.
+
+That applies to `m`, `h`, `d` and `w`. Days and weeks count *your* working
+days, so `/due 2d` is two working days, not 48 hours.
+
+The calendar forms (`2mo`, `3pm`, `tomorrow`, `Friday`) name a date instead.
+They land at your work start hour and roll forward off a weekend.
+
+Months are real calendar months, clamped to the end of the month: 31 January
+plus one month is 28 February, not 3 March.
 
 ---
 
@@ -134,16 +159,24 @@ Use `/due` to set specific deadlines on active items:
 
 ### Acknowledge (Reset Timer)
 
-When you complete a cycle, click the **checkmark** to reset it. The next due time is calculated based on the cadence and work hours.
+When you complete a cycle, click the **checkmark** and choose **Reset Timer**. The next due time is calculated from the item's cadence and your work hours.
+
+Items created with `/due` have no cadence to restore, so Reset Timer asks you for a new due time instead. It accepts every format `/due` does.
 
 ### Snooze
 
 Temporarily hide items you can't address right now:
 
-- Click a snooze button (30m, 1h, 4h, 1d)
+- Click the **snooze** button on an item and enter a duration (`30m`, `2h`, `1d`, `1w`, `1mo`)
 - Or type: `Item title /snooze 2h`
 
-Snoozed items move to a separate section and return automatically when the snooze expires.
+A snooze is a deadline like any other and uses the same units as `/due`: `1d`
+is one of your working days, `1w` is seven of them, and `1mo` is a real
+calendar month. Snooze something on a Saturday and the clock does not start
+until Monday morning.
+
+Snoozed items are hidden from the list entirely. They return on their own when
+the snooze expires, arriving with five minutes left on the clock.
 
 ### Archive
 
@@ -195,7 +228,9 @@ Ogeka runs in your system tray:
 | `Cmd+Shift+Space` (macOS) | Show/focus window |
 | `Ctrl+Shift+Space` (Windows/Linux) | Show/focus window |
 | `Enter` | Submit command |
-| Type `help` | Open help modal |
+
+Open the help modal with the **?** button in the header, or the **Commands**
+link beside the input bar.
 
 ---
 
