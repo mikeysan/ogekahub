@@ -54,15 +54,19 @@ Ogeka manages **cycles** — recurring tasks that repeat on a schedule. Unlike t
 
 ### Business Hours Logic
 
-When using `d` (days), Ogeka respects your work schedule:
+Everything except `cd` respects your work schedule:
 
-- Time only accumulates during configured work hours
-- Weekends are skipped by default
-- A "1 day" cadence = 8 work hours (not 24 calendar hours)
+- Time only accumulates during your configured work hours
+- Non-working days are skipped, whichever days those are
+- A "1 day" cadence is **one of your working days** — 8 hours on a 9–5
+  schedule, 9 hours on a 9–6 one. Never 24 hours
 
 **Example:** With 9 AM–5 PM work hours and a 1-day cadence:
 - Check at 4 PM Monday → Due 4 PM Tuesday
 - Check at 4 PM Friday → Due 4 PM Monday (weekend skipped)
+
+A 9 AM–6 PM schedule gives the same two answers. The length of your day
+changes how much time that is, not which day you land on.
 
 Configure work hours via the ⚙️ gear icon.
 
@@ -88,11 +92,13 @@ Database backup /every 1d
 
 | Unit | Meaning | Behavior |
 |------|---------|----------|
-| `m` | Minutes | Always counts |
-| `h` | Hours | Always counts |
-| `d` | Days | Business hours only, skips weekends |
-| `cd` | Calendar Days | Includes weekends |
-| `w` | Weeks | 7 calendar days |
+| `m` | Minutes | Minutes of working time |
+| `h` | Hours | Hours of working time |
+| `d` | Days | One of *your* working days each — see below |
+| `w` | Weeks | Seven working days |
+| `cd` | Calendar Days | Plain calendar days, weekends included |
+
+`cd` is the only unit that ignores your work schedule.
 
 **Default:** If no `/every` is specified, cycles default to 4 hours.
 
@@ -122,20 +128,26 @@ Use `/due` to set specific deadlines on active items:
 
 | Format | Example | Result |
 |--------|---------|--------|
-| Minutes | `/due 30m` | Due in 30 minutes |
-| Hours | `/due 2h` | Due in 2 hours |
-| Days | `/due 3d` | Due in 3 days |
-| Weeks | `/due 2w` | Due in 14 days |
+| Minutes | `/due 30m` | Due in 30 minutes of working time |
+| Hours | `/due 2h` | Due in 2 hours of working time |
+| Days | `/due 3d` | Due in 3 working days |
+| Weeks | `/due 2w` | Due in 14 working days |
 | Calendar months | `/due 2mo` | The same date two months on |
 | Specific time | `/due 3pm` | Today at 3:00 PM, or tomorrow if it has passed |
 | 24-hour format | `/due 15:30` | Today at 3:30 PM |
 | Tomorrow | `/due tomorrow` | Tomorrow at your work start hour |
 | Day of week | `/due Friday` | The next Friday at your work start hour |
 
-**Two kinds of deadline.** Durations (`m`, `h`, `d`, `w`) are plain elapsed
-time — they keep the current time of day and run straight through weekends.
-The calendar forms (`2mo`, `3pm`, `tomorrow`, `Friday`) land on a date at your
-work start hour, and roll forward if that date falls on a weekend.
+**The countdown only runs while you are working.** Outside your hours it is
+frozen. Set something on a Saturday and it does not start counting down until
+Monday morning: `/due 2h` on a Saturday is due at 11 AM Monday on a 9 AM
+start, not two hours later.
+
+That applies to `m`, `h`, `d` and `w`. Days and weeks count *your* working
+days, so `/due 2d` is two working days, not 48 hours.
+
+The calendar forms (`2mo`, `3pm`, `tomorrow`, `Friday`) name a date instead.
+They land at your work start hour and roll forward off a weekend.
 
 Months are real calendar months, clamped to the end of the month: 31 January
 plus one month is 28 February, not 3 March.
