@@ -163,6 +163,29 @@ When you complete a cycle, click the **checkmark** and choose **Reset Timer**. T
 
 Items created with `/due` have no cadence to restore, so Reset Timer asks you for a new due time instead. It accepts every format `/due` does.
 
+### Edit
+
+Correct a mistake in a saved item — a mistyped ticket reference, or a due time
+you picked wrongly at the time:
+
+- Click the **pencil** button on an item
+- The box opens with the item's title, and shows how long is currently left
+
+It takes the same commands as adding:
+
+| You submit | What changes |
+|------------|--------------|
+| `Review FLS-1233` | the title only |
+| `Review FLS-1233 /due 2h` | the title, and when it is next due |
+| `Review FLS-1233 /every 4d` | the title, and the repeat interval |
+
+**Leave a command out and that part stays as it is.** This differs from adding,
+where a line with no `/every` gets the 4-hour default — editing never applies
+that, so fixing a typo cannot silently change a schedule.
+
+Editing is for fixing mistakes. To do a recurring task early, just do it and
+press Reset Timer.
+
 ### Snooze
 
 Temporarily hide items you can't address right now:
